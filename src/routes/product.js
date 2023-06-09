@@ -12,7 +12,7 @@ import fetchUser from "../middleware/fetchUser.js";
 const router = Router();
 
 router.post(
-  "/orders/new",
+  "/new",
   fetchUser,
   [
     body("title").isLength({ min: 3 }),
@@ -23,23 +23,23 @@ router.post(
   createProduct
 );
 
-router.get("/products", fetchAllProducts);
+router.get("/", fetchAllProducts);
 
 router.get(
-  "/products/:id",
+  "/:id",
   [param("id").exists().isMongoId().withMessage("Not a valid id")],
   fetchProductInfo
 );
 
 router.patch(
-  "/products/:id",
+  "/:id",
   fetchUser,
   [param("id").exists().isMongoId().withMessage("Not a valid id")],
   editProduct
 );
 
 router.delete(
-  "/products/:id",
+  "/:id",
   fetchUser,
   [param("id").exists().isMongoId().withMessage("Not a valid id")],
   deleteProduct

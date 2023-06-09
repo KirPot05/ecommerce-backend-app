@@ -11,7 +11,7 @@ import fetchUser from "../middleware/fetchUser.js";
 const router = Router();
 
 router.post(
-  "/orders/new",
+  "/new",
   fetchUser,
   [
     body("userId").exists().isMongoId().withMessage("Invalid userId"),
@@ -31,10 +31,10 @@ router.post(
   createOrder
 );
 
-router.get("/orders", fetchUser, fetchAllOrders);
+router.get("/", fetchUser, fetchAllOrders);
 
 router.get(
-  "/orders/:id",
+  "/:id",
   fetchUser,
   [param("id").exists().isMongoId().withMessage("Not a valid id")],
   fetchOrderInfo
@@ -48,7 +48,7 @@ router.get(
 // );
 
 router.patch(
-  "/orders/:id/cancel",
+  "/:id/cancel",
   fetchUser,
   [param("id").exists().isMongoId().withMessage("Not a valid id")],
   cancelOrder

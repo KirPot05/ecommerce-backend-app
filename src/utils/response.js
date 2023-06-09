@@ -7,7 +7,7 @@ export function failed_response(code, message, response = {}) {
   };
 }
 
-export function success_response(code, message, response) {
+export function success_response(code, message, response = {}) {
   return {
     success: true,
     code: code,

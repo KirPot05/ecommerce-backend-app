@@ -61,7 +61,7 @@ export async function createUser(req, res) {
   if (!errors.isEmpty()) {
     return res
       .status(400)
-      .json(failed_response(500, "Something went wrong", errors.array()));
+      .json(failed_response(400, "Something went wrong", errors.array()));
   }
 
   try {
@@ -169,6 +169,7 @@ export async function fetchUserInfo(req, res) {
   }
 }
 
+// Apply pagination
 export async function fetchAllUsers(req, res) {
   try {
     if (!req.isAdmin) {

@@ -1,10 +1,4 @@
 import { Router } from "express";
-import {
-  cancelOrder,
-  createOrder,
-  fetchAllOrders,
-  fetchOrderInfo,
-} from "../controllers/order.js";
 import { body, param } from "express-validator";
 import fetchUser from "../middleware/fetchUser.js";
 import {

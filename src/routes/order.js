@@ -19,10 +19,6 @@ router.post(
       .exists()
       .isArray({ min: 1 })
       .withMessage("Products are required to place order"),
-    body("amount")
-      .exists()
-      .isInt({ gt: 1 })
-      .withMessage("Amount value greater than Rs.1 is required to place order"),
     body("address")
       .exists()
       .isObject()

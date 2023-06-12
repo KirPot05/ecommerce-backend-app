@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import { failed_response, success_response } from "../utils/response.js";
 import OrderModel from "../models/Order.js";
+import ProductModel from "../models/Product.js";
 import UserModel from "../models/User.js";
 import {
   ALLOWED_ORDER_FIELDS,
@@ -31,10 +32,30 @@ export async function createOrder(req, res) {
         .json(failed_response(403, "Operation not allowed"));
     }
 
+    const products = req.body.products;
+    if (!Array.isArray(orderedProducts) || orderedProducts.length === 0) {
+      return res
+        .status(400)
+        .json(
+          failed_response(400, "Products are required for placing an order")
+        );
+    }
+
+    const orderedProducts = [];
+    for (const product of products) {
+      const item = await ProductModel.findById(product);
+      orderedProducts.push({ price: item.price, id: item._id });
+    }
+
+    const amount = orderedProducts.reduce(
+      (acc, product) => acc + product.price,
+      0
+    );
+
     const orderData = {
       userId,
-      products: req.body.products,
-      amount: req.body.amount,
+      orderedProducts,
+      amount,
       address: req.body.address,
     };
     const order = await OrderModel.create(orderData);

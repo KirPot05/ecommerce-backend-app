@@ -18,10 +18,6 @@ router.post(
       .exists()
       .isArray({ min: 1 })
       .withMessage("Products are required to add to cart"),
-    body("address")
-      .exists()
-      .isObject()
-      .withMessage("Delivery address is required to place order"),
   ],
   addItems
 );

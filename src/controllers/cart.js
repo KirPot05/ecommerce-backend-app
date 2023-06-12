@@ -27,6 +27,20 @@ export async function addItems(req, res) {
         .json(failed_response(403, "Operation not allowed"));
     }
 
+    const userCart = await CartModel.findOne({ userId });
+    if (userCart !== null) {
+      await CartModel.updateOne(
+        { userId },
+        {
+          $push: { products: { ...req.body.products } },
+        }
+      );
+
+      return res
+        .status(201)
+        .json(success_response(201, "Added products to cart"));
+    }
+
     const cart = await CartModel.create({
       userId,
       products: req.body.products,
@@ -50,7 +64,7 @@ export async function updateCartItem(req, res) {
       .json(failed_response(400, errors.array().at(0).msg, errors.array()));
   }
 
-  const productId = req.params.productId;
+  const productId = req.params.id;
   const userId = req.user_id;
 
   try {
@@ -129,7 +143,7 @@ export async function removeCartItem(req, res) {
       .json(failed_response(400, errors.array().at(0).msg, errors.array()));
   }
 
-  const productId = req.params.productId;
+  const productId = req.params.id;
   const userId = req.user_id;
 
   try {
@@ -144,8 +158,9 @@ export async function removeCartItem(req, res) {
     await CartModel.updateOne(
       {
         userId,
+        "products.productId": productId,
       },
-      { $pull: { "products.$.productId": productId } }
+      { $pull: { products: { productId } } }
     );
 
     return res

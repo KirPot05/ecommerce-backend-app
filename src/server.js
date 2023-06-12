@@ -3,6 +3,7 @@ import morgan from "morgan";
 import cors from "cors";
 import authRoutes from "./routes/auth.js";
 import orderRoutes from "./routes/order.js";
+import cartRoutes from "./routes/cart.js";
 import productRoutes from "./routes/product.js";
 import { NODE_ENV } from "./config/index.js";
 
@@ -24,6 +25,7 @@ export function startServer() {
 
   app.use("/api/auth", authRoutes);
   app.use("/api/products", productRoutes);
+  app.use("/api/cart", cartRoutes);
   app.use("/api/orders", orderRoutes);
 
   return app;

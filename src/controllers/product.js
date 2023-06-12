@@ -25,6 +25,12 @@ export async function createProduct(req, res) {
       }
     }
 
+    if (req.body.price <= 0) {
+      return res
+        .status(400)
+        .json(failed_response(400, "Price must be atleast Rs.1"));
+    }
+
     const product = await ProductModel.create(req.body);
 
     return res
@@ -48,7 +54,7 @@ export async function editProduct(req, res) {
   const userId = req.user_id;
 
   try {
-    if (!req.isAmin || String(userId).trim() === "") {
+    if (!req.isAdmin || String(userId).trim() === "") {
       return res
         .status(403)
         .json(failed_response(403, "Unauthorized Operation"));
@@ -138,7 +144,7 @@ export async function deleteProduct(req, res) {
   const productId = req.params.id;
 
   try {
-    if (!req.isAmin) {
+    if (!req.isAdmin) {
       return res
         .status(403)
         .json(failed_response(403, "Unauthorized Operation"));

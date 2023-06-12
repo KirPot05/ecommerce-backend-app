@@ -4,6 +4,7 @@ import {
   editUser,
   fetchAllUsers,
   fetchUserInfo,
+  getUserStats,
   userLogin,
 } from "../controllers/auth.js";
 import { body } from "express-validator";
@@ -32,5 +33,7 @@ router.get("/users", fetchUser, fetchAllUsers);
 router.get("/users/:id", fetchUser, fetchUserInfo);
 
 router.patch("/users/:id", fetchUser, editUser);
+
+router.get("/stats", fetchUser, getUserStats);
 
 export default router;

@@ -190,3 +190,48 @@ export async function fetchAllUsers(req, res) {
     return res.status(500).json(failed_response(500, "Internal server error"));
   }
 }
+
+export async function getUserStats(req, res) {
+  try {
+    if (!req.isAdmin || req.user_id?.trim() === "") {
+      return res
+        .status(403)
+        .json(failed_response(403, "Unauthorized operation"));
+    }
+
+    const admin = await User.findById(req.user_id);
+    if (admin === null || !admin?.isAdmin) {
+      return res
+        .status(403)
+        .json(failed_response(403, "Unauthorized operation"));
+    }
+
+    const date = new Date();
+    const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
+
+    const data = await User.aggregate([
+      { $match: { createdAt: { $gte: lastYear } } },
+      {
+        $project: {
+          month: { $month: "$createdAt" },
+        },
+      },
+
+      {
+        $group: {
+          _id: "$month",
+          total: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const result = success_response(
+      200,
+      "User stats fetched successfully",
+      data
+    );
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(error.message);
+  }
+}

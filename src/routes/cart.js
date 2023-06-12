@@ -7,6 +7,12 @@ import {
 } from "../controllers/order.js";
 import { body, param } from "express-validator";
 import fetchUser from "../middleware/fetchUser.js";
+import {
+  addItems,
+  fetchCartItems,
+  removeCartItem,
+  updateCartItem,
+} from "../controllers/cart.js";
 
 const router = Router();
 
@@ -14,44 +20,32 @@ router.post(
   "/add",
   fetchUser,
   [
-    body("userId").exists().isMongoId().withMessage("Invalid userId"),
     body("products")
       .exists()
       .isArray({ min: 1 })
-      .withMessage("Products are required to place order"),
-    body("amount")
-      .exists()
-      .isInt({ gt: 1 })
-      .withMessage("Amount value greater than Rs.1 is required to place order"),
+      .withMessage("Products are required to add to cart"),
     body("address")
       .exists()
       .isObject()
       .withMessage("Delivery address is required to place order"),
   ],
-  createOrder
+  addItems
 );
 
-router.get("/", fetchUser, fetchAllOrders);
+router.get("/", fetchUser, fetchCartItems);
 
-router.get(
+router.patch(
   "/:id",
   fetchUser,
   [param("id").exists().isMongoId().withMessage("Not a valid id")],
-  fetchOrderInfo
+  updateCartItem
 );
 
-// router.patch(
-//   "/orders/:id",
-//   fetchUser,
-//   [param("id").exists().isMongoId().withMessage("Not a valid id")],
-//   editProduct
-// );
-
-router.patch(
-  "/:id/cancel",
+router.delete(
+  "/:id",
   fetchUser,
   [param("id").exists().isMongoId().withMessage("Not a valid id")],
-  cancelOrder
+  removeCartItem
 );
 
 export default router;
